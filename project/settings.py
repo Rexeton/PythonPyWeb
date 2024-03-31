@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.app',
     'apps.db_train',
+    'apps.db_train_alternative',
     'apps.api',
     'tinymce',
     'crispy_forms',
     'crispy_bootstrap4',
+
 
 ]
 

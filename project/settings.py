@@ -31,7 +31,7 @@ DEBUG = os.getenv('DEBUG')=='true'
 ALLOWED_HOSTS = [host.strip() for host in os.getenv('ALLOWED_HOSTS').split(',')]
 
 # Application definition
-
+# DJANGO_SETTINGS_MODULE="STATIC_URL"
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,10 +46,10 @@ INSTALLED_APPS = [
     'tinymce',
     'crispy_forms',
     'crispy_bootstrap4',
-    "debug_toolbar",
-    'rest_framework',
-
-
+    'debug_toolbar',
+    # 'REST_FRAMEWORK',
+    'django_filters',
+    # 'DJANGO_SETTINGS_MODULE',
 ]
 
 

@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt  # Чтобы post, put, patch, delete не требовали csrf токена (небезопасно)
-from apps.db_train_alternative.models import Author
-from .serializers import AuthorSerializer
+from apps.db_train_alternative.models import Author,Blog
+from .serializers import AuthorSerializer,BlogSerializer
 
 
 class AuthorAPIView(APIView):
@@ -99,7 +99,7 @@ class AuthorGenericAPIView(GenericAPIView, RetrieveModelMixin, ListModelMixin, C
 from rest_framework import viewsets
 from rest_framework.response import Response
 # from .models import Author
-from .serializers import AuthorSerializer
+from .serializers import AuthorSerializer,BlogModelSerializer
 from rest_framework import status
 
 class AuthorViewSet(viewsets.GenericViewSet):
@@ -175,7 +175,33 @@ class AuthorViewSet(ModelViewSet):
         return queryset
 
 
+class BlogGenericAPIView(GenericAPIView, RetrieveModelMixin, ListModelMixin, CreateModelMixin, UpdateModelMixin,
+                           DestroyModelMixin):
+    queryset = Blog.objects.all()
+    serializer_class = BlogModelSerializer
 
+    def get(self, request, *args, **kwargs):
+        if kwargs.get(self.lookup_field):
+            try:
+                # возвращаем один объект
+                return self.retrieve(request, *args, **kwargs)
+            except Http404:
+                return Response({'message': 'Автор не найден'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            # Иначе возвращаем список объектов
+            return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 

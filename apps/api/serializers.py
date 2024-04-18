@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.db_train_alternative.models import Author
+from apps.db_train_alternative.models import Author, Blog
 
 
 class AuthorSerializer(serializers.Serializer):
@@ -25,3 +25,25 @@ class AuthorModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ['id', 'name', 'email']  # или можно прописать '__all__' если нужны все поля
+
+class BlogSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    tagline = serializers.CharField()
+    def create(self, validated_data):
+        """
+        Создать и вернуть новый объект Author на основе предоставленных проверенных данных.
+        """
+        return Blog.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        """
+        Обновить и вернуть существующий объект Author на основе предоставленных проверенных данных.
+        """
+        instance.name = validated_data.get('name', instance.name)
+        instance.email = validated_data.get('tagline', instance.tagline)
+        instance.save()
+        return instance
+class BlogModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Blog
+        fields = ['name','tagline']  # или можно прописать '__all__' если нужны все поля

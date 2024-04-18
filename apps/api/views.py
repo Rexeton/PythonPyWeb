@@ -186,7 +186,7 @@ class BlogGenericAPIView(GenericAPIView, RetrieveModelMixin, ListModelMixin, Cre
                 # возвращаем один объект
                 return self.retrieve(request, *args, **kwargs)
             except Http404:
-                return Response({'message': 'Автор не найден'}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'message': 'Блог не найден'}, status=status.HTTP_404_NOT_FOUND)
         else:
             # Иначе возвращаем список объектов
             return self.list(request, *args, **kwargs)

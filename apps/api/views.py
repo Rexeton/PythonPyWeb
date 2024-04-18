@@ -149,7 +149,7 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 class AuthorPagination(PageNumberPagination):
-    page_size = 5  # количество объектов на странице
+    page_size = 6  # количество объектов на странице
     page_size_query_param = 'page_size'  # параметр запроса для настройки количества объектов на странице
     max_page_size = 1000  # максимальное количество объектов на странице
 

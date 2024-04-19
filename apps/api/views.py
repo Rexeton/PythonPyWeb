@@ -4,10 +4,31 @@ from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt  # Чтобы post, put, patch, delete не требовали csrf токена (небезопасно)
 from apps.db_train_alternative.models import Author,Blog
 from .serializers import AuthorSerializer,BlogSerializer
+from rest_framework import permissions
 
+class CustomPermission(permissions.BasePermission):
+    """
+    Пользователи могут выполнять различные действия в зависимости от их роли.
+    """
 
+    def has_permission(self, request, view):
+        # Разрешаем только GET запросы для неаутентифицированных пользователей
+        if request.method == 'GET' and not request.user.is_authenticated:
+            return True
+
+        # Разрешаем GET и POST запросы для аутентифицированных пользователей
+        if request.method in ['GET', 'POST'] and request.user.is_authenticated:
+            return True
+
+        # Разрешаем все действия для администраторов
+        if request.user.is_superuser:
+            return True
+
+        # Во всех остальных случаях возвращаем False
+        return False
 class AuthorAPIView(APIView):
-    @csrf_exempt
+    permission_classes = [permissions.IsAuthenticated]
+    # @csrf_exempt
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -68,11 +89,15 @@ from django.http import Http404
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin
 from .serializers import AuthorModelSerializer
+from rest_framework import authentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 class AuthorGenericAPIView(GenericAPIView, RetrieveModelMixin, ListModelMixin, CreateModelMixin, UpdateModelMixin,
                            DestroyModelMixin):
     queryset = Author.objects.all()
     serializer_class = AuthorModelSerializer
-
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     def get(self, request, *args, **kwargs):
         if kwargs.get(self.lookup_field):
             try:

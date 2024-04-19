@@ -4,6 +4,7 @@ from .views import AuthorGenericAPIView
 from django.urls import include
 from .views import AuthorViewSet,BlogGenericAPIView
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 router = DefaultRouter()
 router.register(r'authors_viewset', AuthorViewSet, basename='authors-viewset')
@@ -15,5 +16,8 @@ urlpatterns = [
     path('authors_generic/<int:pk>/', AuthorGenericAPIView.as_view(), name='author-generic-detail'),
     path('blog_generic/', BlogGenericAPIView.as_view(), name='blog-generic-list'),
     path('blog_generic/<str:name>', BlogGenericAPIView.as_view(), name='blog-generic-detail'),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # Получение токена
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Обновление токена
+    path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('', include(router.urls)),
 ]
